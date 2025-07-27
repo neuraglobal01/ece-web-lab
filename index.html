@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECE Web Lab - A neuraglobal Product</title>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2387/2387545.png">
+    <style>
+        :root {
+            --g-blue: #1a73e8;
+            --g-blue-hover: #1765cc;
+            --g-gray: #5f6368;
+            --g-gray-light: #f1f3f4;
+            --g-gray-border: #dadce0;
+            --g-text: #202124;
+            --g-text-light: #70757a;
+            --g-white: #ffffff;
+            --g-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 2px 6px 2px rgba(60,64,67,0.15);
+            --g-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--g-white);
+            color: var(--g-text);
+            line-height: 1.5;
+            font-size: 14px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .g-header {
+            display: flex;
+            align-items: center;
+            padding: 8px 16px;
+            height: 64px;
+            border-bottom: 1px solid var(--g-gray-border);
+            background: var(--g-white);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+
+        .g-header-logo {
+            display: flex;
+            align-items: center;
+            margin-right: 40px;
+        }
+
+        .g-header-logo-icon {
+            color: var(--g-blue);
+            font-size: 32px;
+            margin-right: 8px;
+        }
+
+        .g-header-logo-text {
+            font-family: 'Google Sans', sans-serif;
+            font-size: 22px;
+            font-weight: 500;
+            color: var(--g-text);
+        }
+
+        .g-header-nav {
+            display: flex;
+            flex-grow: 1;
+        }
+
+        .g-header-nav-item {
+            margin-right: 24px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--g-gray);
+            text-decoration: none;
+            padding: 8px 0;
+            border-bottom: 2px solid transparent;
+            transition: var(--g-transition);
+            cursor: pointer;
+        }
+
+        .g-header-nav-item:hover {
+            color: var(--g-blue);
+        }
+
+        .g-header-nav-item.active {
+            color: var(--g-blue);
+            border-bottom-color: var(--g-blue);
+        }
+
+        /* Splash Screen */
+        .g-splash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--g-white);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.3s ease;
+        }
+
+        .g-splash-content {
+            text-align: center;
+            max-width: 400px;
+            padding: 40px;
+        }
+
+        .g-splash-logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 24px;
+            animation: g-pulse 2s infinite;
+        }
+
+        .g-splash-title {
+            font-family: 'Google Sans', sans-serif;
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            color: var(--g-text);
+        }
+
+        .g-splash-subtitle {
+            font-size: 16px;
+            color: var(--g-gray);
+            margin-bottom: 32px;
+        }
+
+        .g-progress-bar {
+            height: 4px;
+            width: 100%;
+            background-color: var(--g-gray-light);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .g-progress {
+            height: 100%;
+            width: 0%;
+            background-color: var(--g-blue);
+            animation: g-progress 5s linear forwards;
+        }
+
+        /* Main Content */
+        .g-main {
+            flex: 1;
+            padding: 104px 16px 80px;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .g-main.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Search Bar */
+        .g-search {
+            margin-bottom: 32px;
+            position: relative;
+        }
+
+        .g-search-input {
+            width: 100%;
+            padding: 12px 16px 12px 48px;
+            border: 1px solid var(--g-gray-border);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: var(--g-transition);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .g-search-input:focus {
+            outline: none;
+            border-color: var(--g-blue);
+            box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
+        }
+
+        .g-search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--g-gray);
+        }
+
+        /* Labs Grid */
+        .g-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .g-card {
+            background: var(--g-white);
+            border-radius: 8px;
+            border: 1px solid var(--g-gray-border);
+            overflow: hidden;
+            transition: var(--g-transition);
+        }
+
+        .g-card:hover {
+            box-shadow: var(--g-shadow);
+            transform: translateY(-4px);
+        }
+
+        .g-card-thumbnail {
+            height: 160px;
+            background-color: #f5f5f5;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .g-card-content {
+            padding: 16px;
+        }
+
+        .g-card-title {
+            font-family: 'Google Sans', sans-serif;
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--g-text);
+        }
+
+    
+.g-card-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 10px 16px;
+    background-color: var(--g-blue);
+    color: var(--g-white);
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--g-transition);
+    margin-top: 12px;
+    text-decoration: none; /* Add this line */
+}
+
+
+        .g-card-button:hover {
+            background-color: var(--g-blue-hover);
+            box-shadow: 0 1px 2px 0 rgba(66,133,244,0.3), 0 1px 3px 1px rgba(66,133,244,0.15);
+        }
+
+        .g-card-button .material-icons {
+            margin-left: 8px;
+            font-size: 18px;
+        }
+
+        /* Info Dialog */
+        .g-dialog {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--g-white);
+            border-radius: 8px;
+            box-shadow: var(--g-shadow);
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            z-index: 1001;
+            display: none;
+        }
+
+        .g-dialog.show {
+            display: block;
+            animation: g-fadeInUp 0.3s ease;
+        }
+
+        .g-dialog-header {
+            padding: 24px 24px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--g-gray-border);
+        }
+
+        .g-dialog-title {
+            font-family: 'Google Sans', sans-serif;
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--g-text);
+        }
+
+        .g-dialog-close {
+            background: none;
+            border: none;
+            color: var(--g-gray);
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: var(--g-transition);
+        }
+
+        .g-dialog-close:hover {
+            background-color: var(--g-gray-light);
+        }
+
+        .g-dialog-body {
+            padding: 24px;
+        }
+
+        .g-dialog-content {
+            line-height: 1.6;
+            color: var(--g-text);
+        }
+
+        .g-dialog-content ul {
+            margin: 16px 0;
+            padding-left: 24px;
+        }
+
+        .g-dialog-content li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .g-footer {
+            background-color: var(--g-white);
+            border-top: 1px solid var(--g-gray-border);
+            padding: 16px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            z-index: 100;
+        }
+
+        .g-footer-text {
+            color: var(--g-gray);
+            font-size: 12px;
+        }
+
+        /* Overlay */
+        .g-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            display: none;
+        }
+
+        .g-overlay.show {
+            display: block;
+        }
+
+        /* Animations */
+        @keyframes g-fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes g-fadeInUp {
+            from { 
+                opacity: 0;
+                transform: translate(-50%, -40%);
+            }
+            to { 
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        @keyframes g-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes g-progress {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 900px) {
+            .g-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            }
+        }
+
+        @media (max-width: 600px) {
+            .g-header {
+                height: 56px;
+                padding: 8px;
+            }
+            
+            .g-header-logo-text {
+                font-size: 18px;
+            }
+            
+            .g-header-nav {
+                display: none;
+            }
+            
+            .g-main {
+                padding: 96px 16px 72px;
+            }
+            
+            .g-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="g-header">
+        <div class="g-header-logo">
+            <span class="g-header-logo-icon material-icons">science</span>
+            <span class="g-header-logo-text">ECE Web Lab</span>
+        </div>
+        <nav class="g-header-nav">
+            <div class="g-header-nav-item" data-dialog="benefits">Benefits</div>
+            <div class="g-header-nav-item" data-dialog="opportunities">Opportunities</div>
+            <div class="g-header-nav-item" data-dialog="scope">Scope</div>
+            <div class="g-header-nav-item" data-dialog="companies">Companies</div>
+        </nav>
+    </header>
+
+    <!-- Splash Screen -->
+    <div class="g-splash" id="splashScreen">
+        <div class="g-splash-content">
+            <svg class="g-splash-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#5F6368">
+                <path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm-1.06 13.54L7.4 12l1.41-1.41 2.12 2.12 4.24-4.24 1.41 1.41-5.64 5.66z"/>
+            </svg>
+            <h1 class="g-splash-title">ECE Web Lab</h1>
+            <p class="g-splash-subtitle">A neuraglobal Product</p>
+            <div class="g-progress-bar">
+                <div class="g-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="g-main" id="mainContent">
+        <div class="g-search">
+            <span class="g-search-icon material-icons">search</span>
+            <input type="text" class="g-search-input" placeholder="Search labs...">
+        </div>
+
+        <div class="g-grid">
+            <!-- Resistor Lab -->
+<div class="g-card">
+    <div class="g-card-thumbnail" style="background-image: url('https://makeabilitylab.github.io/physcomp/electronics/assets/gifs/ResistorCurrentFlow_EngineeringMindset-Optimized.gif');">
+    </div>
+    <div class="g-card-content">
+        <h3 class="g-card-title">Resistor Lab</h3>
+        <a class="g-card-button" href="https://neuraglobal01.github.io/resistor/">
+            ENTER LAB <span class="material-icons">arrow_forward</span>
+        </a>
+    </div>
+</div>
+
+            <!-- Capacitor Lab -->
+            <div class="g-card">
+                <div class="g-card-thumbnail" style="background-image: url('https://paiste51280814.wordpress.com/wp-content/uploads/2018/12/capacitor-gif-1.gif');">
+                </div>
+                <div class="g-card-content">
+                    <h3 class="g-card-title">Capacitor Lab</h3>
+                    <button class="g-card-button" data-lab="capacitor">
+                        ENTER LAB <span class="material-icons">arrow_forward</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Inductor Lab -->
+            <div class="g-card">
+                <div class="g-card-thumbnail" style="background-image: url('https://res.utmel.com/Images/UEditor/3a0976cc-afb8-4ad7-a898-5817061c092d.gif');">
+                </div>
+                <div class="g-card-content">
+                    <h3 class="g-card-title">Inductor Lab</h3>
+                    <button class="g-card-button" data-lab="inductor">
+                        ENTER LAB <span class="material-icons">arrow_forward</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Transistor Lab -->
+            <div class="g-card">
+                <div class="g-card-thumbnail" style="background-image: url('https://www.schoolnet.org.za/PILAfrica/en/webs/c006224/img/bjtworkadv.gif');">
+                </div>
+                <div class="g-card-content">
+                    <h3 class="g-card-title">Transistor Lab</h3>
+                    <button class="g-card-button" data-lab="transistor">
+                        ENTER LAB <span class="material-icons">arrow_forward</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Diode Lab -->
+            <div class="g-card">
+                <div class="g-card-thumbnail" style="background-image: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgxXlMiF9EZmT55ODF__uVaTgrgaOp7JGrCgh3OVYUtsfaa676h2ylJt6z6nbASUJVmwaodmgGAewQpTHu_53BbYog8hLUdHupc6DFgnXXCMOTSdOYTSG-LQ8H5QdnBLfDQy_xaP3nqwYk/s1600/pndiode.gif');">
+                </div>
+                <div class="g-card-content">
+                    <h3 class="g-card-title">Diode Lab</h3>
+                    <button class="g-card-button" data-lab="diode">
+                        ENTER LAB <span class="material-icons">arrow_forward</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Circuit Design Lab -->
+            <div class="g-card">
+                <div class="g-card-thumbnail" style="background-image: url('https://media.tenor.com/uzjlT2w2Ss0AAAAM/circuits-pcb.gif');">
+                </div>
+                <div class="g-card-content">
+                    <h3 class="g-card-title">Circuit Design Lab</h3>
+                    <button class="g-card-button" data-lab="circuit">
+                        ENTER LAB <span class="material-icons">arrow_forward</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="g-footer">
+        <p class="g-footer-text">© 2023 ECE Web Lab - A neuraglobal Product. All rights reserved.</p>
+    </footer>
+
+    <!-- Info Dialogs -->
+    <div class="g-overlay" id="overlay"></div>
+
+    <!-- Benefits Dialog -->
+    <div class="g-dialog" id="benefitsDialog">
+        <div class="g-dialog-header">
+            <h2 class="g-dialog-title">Benefits of ECE</h2>
+            <button class="g-dialog-close" data-dialog="benefits"><span class="material-icons">close</span></button>
+        </div>
+        <div class="g-dialog-body">
+            <div class="g-dialog-content">
+                <ul>
+                    <li>Comprehensive knowledge of hardware and software integration</li>
+                    <li>Diverse career paths across multiple industries</li>
+                    <li>Development of critical problem-solving skills</li>
+                    <li>Opportunity to innovate in communication technologies</li>
+                    <li>Combination of technical expertise with creative solutions</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Opportunities Dialog -->
+    <div class="g-dialog" id="opportunitiesDialog">
+        <div class="g-dialog-header">
+            <h2 class="g-dialog-title">Opportunities in ECE</h2>
+            <button class="g-dialog-close" data-dialog="opportunities"><span class="material-icons">close</span></button>
+        </div>
+        <div class="g-dialog-body">
+            <div class="g-dialog-content">
+                <ul>
+                    <li>Telecommunication (5G, IoT, networking infrastructure)</li>
+                    <li>Embedded systems and VLSI chip design</li>
+                    <li>Robotics, automation and control systems</li>
+                    <li>Signal and image processing applications</li>
+                    <li>Research in emerging electronic technologies</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scope Dialog -->
+    <div class="g-dialog" id="scopeDialog">
+        <div class="g-dialog-header">
+            <h2 class="g-dialog-title">Scope of ECE</h2>
+            <button class="g-dialog-close" data-dialog="scope"><span class="material-icons">close</span></button>
+        </div>
+        <div class="g-dialog-body">
+            <div class="g-dialog-content">
+                <ul>
+                    <li>Semiconductor industry growth and innovation</li>
+                    <li>Advancements in wireless communication</li>
+                    <li>Medical electronics and healthcare technology</li>
+                    <li>Smart city infrastructure and IoT ecosystems</li>
+                    <li>AI hardware and quantum computing development</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Companies Dialog -->
+    <div class="g-dialog" id="companiesDialog">
+        <div class="g-dialog-header">
+            <h2 class="g-dialog-title">Top Companies for ECE</h2>
+            <button class="g-dialog-close" data-dialog="companies"><span class="material-icons">close</span></button>
+        </div>
+        <div class="g-dialog-body">
+            <div class="g-dialog-content">
+                <ul>
+                    <li>Intel, Qualcomm, AMD, NVIDIA (Semiconductors)</li>
+                    <li>Samsung, LG, Sony (Consumer Electronics)</li>
+                    <li>Ericsson, Nokia (Telecom Equipment)</li>
+                    <li>ISRO, DRDO (Government Research)</li>
+                    <li>Texas Instruments, Analog Devices</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const splashScreen = document.getElementById('splashScreen');
+            const mainContent = document.getElementById('mainContent');
+            const overlay = document.getElementById('overlay');
+            const searchInput = document.querySelector('.g-search-input');
+            const labButtons = document.querySelectorAll('.g-card-button');
+            
+            // Dialogs
+            const dialogs = {
+                benefits: document.getElementById('benefitsDialog'),
+                opportunities: document.getElementById('opportunitiesDialog'),
+                scope: document.getElementById('scopeDialog'),
+                companies: document.getElementById('companiesDialog')
+            };
+
+            // Hide splash screen after 5 seconds
+            setTimeout(() => {
+                splashScreen.style.opacity = '0';
+                setTimeout(() => {
+                    splashScreen.style.display = 'none';
+                    mainContent.classList.add('show');
+                }, 300);
+            }, 5000);
+
+            // Nav item click handlers
+            document.querySelectorAll('.g-header-nav-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const dialogId = this.getAttribute('data-dialog');
+                    openDialog(dialogId);
+                });
+            });
+
+            // Dialog close handlers
+            document.querySelectorAll('.g-dialog-close').forEach(button => {
+                button.addEventListener('click', function() {
+                    const dialogId = this.getAttribute('data-dialog');
+                    closeDialog(dialogId);
+                });
+            });
+
+            // Overlay click handler
+            overlay.addEventListener('click', function() {
+                closeAllDialogs();
+            });
+
+            // Lab button click handlers
+            labButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const lab = this.getAttribute('data-lab');
+                    // In a real implementation, this would redirect to the lab page
+                    alert(`Opening ${lab} lab... (This would redirect to the lab page in a real implementation)`);
+                });
+            });
+
+            // Search functionality
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const cards = document.querySelectorAll('.g-card');
+                
+                cards.forEach(card => {
+                    const title = card.querySelector('.g-card-title').textContent.toLowerCase();
+                    if (title.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+
+            // Dialog functions
+            function openDialog(dialogId) {
+                overlay.classList.add('show');
+                dialogs[dialogId].classList.add('show');
+            }
+
+            function closeDialog(dialogId) {
+                overlay.classList.remove('show');
+                dialogs[dialogId].classList.remove('show');
+            }
+
+            function closeAllDialogs() {
+                overlay.classList.remove('show');
+                for (const dialogId in dialogs) {
+                    dialogs[dialogId].classList.remove('show');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
